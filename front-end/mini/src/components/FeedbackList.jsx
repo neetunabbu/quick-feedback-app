@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react';
+import { Base_url } from './constant';
 
 const FeedbackList = () => {
   const [feedbacks, setFeedbacks] = useState([]);
 
   useEffect(() => {
-    const storedFeedback = JSON.parse(localStorage.getItem('feedback')) || [];
-    setFeedbacks(storedFeedback);
+    const fetchFeedbacks = async () => {
+      try {
+        const response = await fetch(`${Base_url}/api/feedback`);
+        const data = await response.json();
+        setFeedbacks(data);
+      } catch (error) {
+        console.error('Error fetching feedbacks:', error);
+      }
+    };
+
+    fetchFeedbacks();
   }, []);
 
   return (

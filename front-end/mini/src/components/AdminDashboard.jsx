@@ -1,24 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import '../AdminDashboard.css'; // Correct CSS file path
+import '../AdminDashboard.css';
+import { Base_url } from './constant';
 
 const AdminDashboard = () => {
   const [feedbacks, setFeedbacks] = useState([]);
 
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await fetch(`${Base_url}/api/feedback`);
+      const data = await response.json();
+      setFeedbacks(data);
+    } catch (error) {
+      console.error('Error fetching feedbacks:', error);
+    }
+  };
+
   useEffect(() => {
-    const storedFeedback = JSON.parse(localStorage.getItem('feedback')) || [];
-    setFeedbacks(storedFeedback);
+    fetchFeedbacks();
   }, []);
 
-  const handleClearFeedback = () => {
-    localStorage.removeItem('feedback');
-    setFeedbacks([]);
-    alert('All Feedback Cleared Successfully!');
+  const handleClearFeedback = async () => {
+    try {
+      const response = await fetch(`${Base_url}/api/feedback`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setFeedbacks([]);
+        alert('All Feedback Cleared Successfully!');
+      } else {
+        alert('Failed to clear feedback.');
+      }
+    } catch (error) {
+      console.error('Error clearing feedback:', error);
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('isAdminLoggedIn');
     alert('Logged Out Successfully');
-    window.location.href = '/admin-login'; // Redirect to Admin Login page
+    window.location.href = '/admin-login';
   };
 
   return (

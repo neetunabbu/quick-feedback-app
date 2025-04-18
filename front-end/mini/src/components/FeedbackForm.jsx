@@ -1,12 +1,11 @@
-// File Path: src/components/FeedbackForm.jsx
-
 import React, { useState } from 'react';
 import '../FeedbackForm.css';
+import { Base_url } from './constant';
 
 const FeedbackForm = () => {
   const [text, setText] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!text) {
@@ -14,12 +13,25 @@ const FeedbackForm = () => {
       return;
     }
 
-    const existingFeedback = JSON.parse(localStorage.getItem('feedback')) || [];
-    const updatedFeedback = [...existingFeedback, { text }];
-    localStorage.setItem('feedback', JSON.stringify(updatedFeedback));
+    try {
+      const response = await fetch(`${Base_url}/api/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text }),
+      });
 
-    alert('Feedback Submitted Successfully!');
-    setText('');
+      if (response.ok) {
+        alert('Feedback Submitted Successfully!');
+        setText('');
+      } else {
+        alert('Failed to submit feedback.');
+      }
+    } catch (error) {
+      alert('Error submitting feedback.');
+      console.error(error);
+    }
   };
 
   return (

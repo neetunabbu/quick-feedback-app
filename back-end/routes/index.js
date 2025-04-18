@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const feedbackRoutes = require('./feedbackRoutes');
+// Import the admin routes
+const adminRoutes = require('./adminRoutes');
 
-// Register all route modules here
-router.use('/feedback', feedbackRoutes); // /api/feedback
+// Mount admin routes under /admin
+router.use('/admin', adminRoutes);
 
 module.exports = router;
